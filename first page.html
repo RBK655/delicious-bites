@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login / Signup</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      background: url('background image for cooking and recipe website with the name Cooking Master in the center.png') no-repeat center center fixed;
+      background-size: cover;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    header {
+      position: absolute;
+      top: 0;
+      width: 100%;
+      background-color: rgba(0, 0, 0, 0.6);
+      padding: 10px;
+      text-align: center;
+      color: white;
+    }
+
+    .container {
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(10px);
+      border-radius: 16px;
+      padding: 30px;
+      max-width: 400px;
+      width: 90%;
+      box-shadow: 0 0 20px rgba(0,0,0,0.6);
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #fbd786;
+    }
+
+    label {
+      display: block;
+      margin: 10px 0 5px;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"] {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      outline: none;
+      margin-bottom: 10px;
+    }
+
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      font-size: 14px;
+    }
+
+    .checkbox-group input {
+      margin-right: 8px;
+    }
+
+    /* Updated toggle password styles */
+    .toggle-password {
+      cursor: pointer;
+      font-size: 20px;
+      color: #ccc;
+      position: absolute;
+      top: 50%;
+      right: 10px;
+      transform: translateY(-50%);
+      z-index: 10;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      background: #ff7b54;
+      border: none;
+      border-radius: 8px;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      background: #ff5722;
+    }
+
+    .error {
+      color: #ffbdbd;
+      font-size: 12px;
+    }
+
+    .switch {
+      text-align: center;
+      margin-top: 10px;
+      font-size: 14px;
+    }
+
+    .switch a {
+      color: #fbd786;
+      cursor: pointer;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🍽️ Delicious Bites</h1>
+  </header>
+
+  <div class="container" id="form-container">
+    <h2 id="form-title">Login</h2>
+
+    <form id="authForm">
+      <div id="nameField" style="display:none;">
+        <label for="username">Username</label>
+        <input type="text" id="username" placeholder="Username"/>
+        <div class="error" id="usernameError"></div>
+      </div>
+
+      <label for="email" aria-placeholder="Email">Email</label>
+      <input type="email" id="email" placeholder="Email"/>
+      <div class="error" id="emailError"></div>
+
+      <label for="password">Password</label>
+      <input type="password" id="password" placeholder="Password"/>
+      <span class="toggle-password" onclick="togglePassword()">👁️</span>
+      <div class="error" id="passwordError"></div>
+
+      <div class="checkbox-group">
+        <input type="checkbox" id="terms" />
+        <label for="terms">I agree to terms & conditions</label>
+      </div>
+      <div class="error" id="termsError"></div>
+
+      <button type="submit">Submit</button>
+
+      <div class="switch">
+        <span id="switchText">Don't have an account?</span> 
+        <a onclick="toggleForm()">Sign Up</a>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    let isSignup = false;
+  
+    function toggleForm() {
+      isSignup = !isSignup;
+      document.getElementById('form-title').textContent = isSignup ? 'Sign Up' : 'Login';
+      document.getElementById('nameField').style.display = isSignup ? 'block' : 'none';
+      document.getElementById('switchText').textContent = isSignup ? 'Already have an account?' : "Don't have an account?";
+      document.querySelector('.switch a').textContent = isSignup ? 'Login' : 'Sign Up';
+    }
+  
+    function togglePassword() {
+      const passwordField = document.getElementById('password');
+      const toggleBtn = document.querySelector('.toggle-password');
+      if (passwordField.type === 'password') {
+        passwordField.type = 'text';
+        toggleBtn.textContent = '🙈';
+      } else {
+        passwordField.type = 'password';
+        toggleBtn.textContent = '👁️';
+      }
+    }
+  
+    document.getElementById('authForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      let valid = true;
+  
+      document.querySelectorAll('.error').forEach(el => el.textContent = '');
+  
+      const username = document.getElementById('username').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      const terms = document.getElementById('terms').checked;
+  
+      if (isSignup && username.length < 4) {
+        document.getElementById('usernameError').textContent = 'Username must be at least 4 characters.';
+        valid = false;
+      }
+  
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        document.getElementById('emailError').textContent = 'Invalid email format.';
+        valid = false;
+      }
+  
+      const passRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+      if (!passRegex.test(password)) {
+        document.getElementById('passwordError').textContent = 'Password must be 8+ chars with upper, lower, number, special char.';
+        valid = false;
+      }
+  
+      if (!terms) {
+        document.getElementById('termsError').textContent = 'You must agree to the terms.';
+        valid = false;
+      }
+  
+      if (!valid) return;
+  
+      // Simulate success message (no server)
+      alert(isSignup ? 'Signup successful!' : 'Login successful!');
+      window.location.href = "home.html";
+    });
+  </script>  
+  
+  
+</body>
+</html>
